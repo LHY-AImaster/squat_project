@@ -63,6 +63,12 @@ Flutter 기반 모바일 애플리케이션과 Spring Boot 서버, Arduino 및 M
 - 사용자별 운동 기록 관리
 - 로그인 및 로그아웃 기능
 
+## 📱 App Screenshots
+
+SquatMate의 주요 화면과 기능을 한눈에 확인할 수 있습니다.
+
+![SquatMate App Screenshots](docs/images/appScreenshots.png)
+
 ## 🏗 System Architecture
 
 ```mermaid
