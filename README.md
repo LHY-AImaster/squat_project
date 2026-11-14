@@ -70,32 +70,51 @@ SquatMate의 주요 화면과 기능을 한눈에 확인할 수 있습니다.
 
 ![SquatMate App Screenshots](docs/images/appScreenshots.png)
 
-## 🏗 System Architecture (아키텍처 다시 만들 것)
+## 🏗 System Architecture
+
+SquatMate의 전체 데이터 처리 흐름은 다음과 같습니다.
 
 ```mermaid
 flowchart TD
-    A["MPU6050 센서 2개"] --> B["Arduino Nano / Uno"]
-    B --> C["BT-05 Bluetooth 모듈"]
-    C --> D["Flutter 앱"]
-    D --> E["기준 벡터 설정 및 상대 각도 계산"]
-    E --> F["로우패스 필터"]
-    F --> G["스쿼트 동작 및 오류 판정"]
-    G --> H[("SQLite 로컬 기록")]
-    H -->|"사용자가 선택한 기록 전송"| I["Spring Boot REST API"]
-    I --> J[("PostgreSQL")]
-    D -->|"기록 조회 / 코칭 요청"| I
-    I -->|"기존 단일 코칭 결과 확인"| J
-    I -->|"저장된 결과가 없을 때"| K["Gemini API"]
-    K --> I
-    I -->|"기록 및 코칭 응답"| D
+    subgraph HW["Hardware"]
+        A["MPU6050 × 2"] --> B["Arduino Nano / Uno"]
+        B --> C["BT-05 Bluetooth"]
+    end
+
+    subgraph APP["Flutter Mobile App"]
+        D["센서 데이터 수신"]
+        E["기준 벡터 설정 및 상대 각도 계산"]
+        F["EMA 로우패스 필터"]
+        G["스쿼트 동작 및 자세 오류 판정"]
+        H[("SQLite 로컬 기록")]
+
+        D --> E --> F --> G --> H
+    end
+
+    subgraph SERVER["Spring Boot Backend"]
+        I["REST API"]
+        J[("PostgreSQL")]
+        K["Gemini API"]
+
+        I <--> J
+        I <--> K
+    end
+
+    C --> D
+    H -->|"사용자가 선택한 기록 동기화"| I
+    APP -->|"기록 조회 및 코칭 요청"| I
+    I -->|"기록 및 코칭 응답"| APP
 ```
+
+시스템을 구성하는 주요 컴포넌트와 각 요소의 역할 및 연결 관계는
+[Architecture Documentation](docs/architecture.md)에서 확인할 수 있습니다.
 
 ### Data Flow
 
 1. 허리와 허벅지에 배치한 MPU6050 센서가 각각 3축 가속도 데이터를 측정합니다.
 2. 각 센서 데이터는 Arduino 보드를 거쳐 BT-05 Bluetooth 모듈을 통해 Flutter 앱으로 전달됩니다.
 3. 앱은 운동 시작 시 기준 자세의 벡터를 저장하고, 측정 중인 현재 벡터와 비교하여 상대 각도를 계산합니다.
-4. 계산된 각도에 EMA 기반 로우패스 필터를 적용한 뒤, 스쿼트 횟수와 자세 오류를 판정합니다.
+4. 계산된 각도 데이터에 EMA 기반 로우패스 필터를 적용한 뒤, 스쿼트 횟수와 자세 오류를 판정합니다.
 5. 운동 기록은 SQLite에 먼저 저장됩니다.
 6. 사용자가 전송할 기록을 선택하면 앱이 REST API를 통해 서버에 전송합니다.
 7. 서버는 사용자별 기록을 PostgreSQL에 저장하고, 기록 조회 및 AI 코칭 요청을 처리합니다.
@@ -246,13 +265,6 @@ squat_project/
 - [AI 코칭 서비스](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/service/SquatCoachingService.java)
 - [Arduino Nano 펌웨어](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/firmware/Separate_Nano.ino)
 - [Arduino Uno 펌웨어](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/firmware/Separate_UNO.ino)
-
-## 📌 Notes
-
-- 이 README는 프로젝트의 구조와 주요 구현 의도를 설명하기 위한 문서입니다.
-- 실제 배포 및 실행 설정은 최종 코드와 환경에 따라 달라질 수 있습니다.
-- 센서 부착 상태, 개인별 신체 특성, 필터의 반응 지연은 측정 결과에 영향을 줄 수 있습니다.
-
 
 ---
 
