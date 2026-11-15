@@ -223,7 +223,7 @@ SquatMate 개발 과정에서 마주한 기술적 문제와 설계 선택, 이�
 
 배포된 Android 테스트 버전을 설치하여 SquatMate의 주요 기능을 직접 체험할 수 있습니다.
 
-1. [GitHub Releases에서 APK 다운로드](RELEASE_PAGE_URL) (URL 이 현재 없음 나중에 확인할 것)
+1. [GitHub Releases에서 APK 다운로드](https://github.com/LHY-AImaster/squat_project/releases)
 2. Android 기기에 APK를 설치하고 앱을 실행합니다.
 3. 회원가입 후 로그인합니다.
 4. 운동 기록, 통계 및 AI 코칭 기능을 확인합니다.
@@ -261,25 +261,16 @@ squat_project/
 
 ## 🔍 Key Source Files
 
-- [Bluetooth 센서 데이터 수신](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/app/lib/services/my_bluetooth_service.dart)
-- [스쿼트 분석 서비스](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/app/lib/services/squat_analyzer_service.dart)
-- [운동 상태 및 기록 관리](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/app/lib/providers/squat_provider.dart)
-- [운동 기록 화면 및 서버 전송](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/app/lib/screens/record_history_screen.dart)
-- [백엔드 API 컨트롤러](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/controller/SquatWorkoutController.java)
-- [AI 코칭 서비스](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/service/SquatCoachingService.java)
-- [Arduino Nano 펌웨어](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/firmware/Separate_Nano.ino)
-- [Arduino Uno 펌웨어](https://github.com/dlgurfuf-AImaster/squat_project/blob/main/firmware/Separate_UNO.ino)
+**Flutter Application**
+- [Bluetooth 센서 데이터 수신](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/services/my_bluetooth_service.dart)
+- [스쿼트 분석 서비스](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/services/squat_analyzer_service.dart)
+- [운동 상태 및 기록 관리](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/providers/squat_provider.dart)
+- [운동 기록 화면 및 서버 전송](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/screens/record_history_screen.dart)
 
----
+**Spring Boot Backend**
+- [백엔드 API 컨트롤러](https://github.com/LHY-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/controller/SquatWorkoutController.java)
+- [AI 코칭 서비스](https://github.com/LHY-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/service/SquatCoachingService.java)
 
-## 작성 완료 후 공개 전 확인할 사항
-
-> 아래 체크리스트는 README 본문이 아니라, 공개 전에 저장소 설정과 대조하기 위한 작업 메모입니다. 공개 버전에서는 이 섹션을 제거하세요.
-
-- [ ] `server/.env.example`의 `MARIADB_PASSWORD`를 실제 설정에서 사용하는 `POSTGRES_PASSWORD`로 변경했는지 확인
-- [ ] `application.properties`의 PostgreSQL 접속 정보와 Render 환경 변수 설정이 일치하는지 확인
-- [ ] 현재 배포 브랜치가 PostgreSQL 통합 커밋을 포함하는지, 실제 배포 서버에서 로그인·기록 저장·AI 코칭이 정상 동작하는지 확인
-- [ ] GitHub Releases의 실제 APK 다운로드 주소를 `RELEASE_PAGE_URL`에 입력
-- [ ] 로컬 실행 안내의 환경 변수 파일명과 위치가 최종 코드와 일치하는지 확인
-- [ ] README의 프로젝트 구조와 소스 파일 링크가 현재 `main` 브랜치와 일치하는지 확인
-- [ ] 앱 스크린샷 및 실제 사용 흐름 섹션은 추후 추가
+**Arduino Firmware**
+- [Arduino Nano 펌웨어](https://github.com/LHY-AImaster/squat_project/blob/main/firmware/Separate_Nano.ino)
+- [Arduino Uno 펌웨어](https://github.com/LHY-AImaster/squat_project/blob/main/firmware/Separate_UNO.ino)
