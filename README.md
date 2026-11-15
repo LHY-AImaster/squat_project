@@ -1,4 +1,10 @@
-# SquatMate 🏋️
+<h1>
+  SquatMate
+  <img src="docs/images/squatmate_icon.png"
+       width="80"
+       alt="SquatMate Icon"
+       style="vertical-align: bottom;">
+</h1>
 
 **실시간 센서 데이터와 AI 코칭을 활용한 스마트 스쿼트 운동 관리 서비스**
 
