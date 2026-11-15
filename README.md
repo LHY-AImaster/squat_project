@@ -70,6 +70,8 @@ SquatMate의 주요 화면과 기능을 한눈에 확인할 수 있습니다.
 
 ![SquatMate App Screenshots](docs/images/appScreenshots.png)
 
+[전체 앱 스크린샷 폴더 보기](docs/images/)
+
 ## 🏗 System Architecture
 
 SquatMate의 전체 데이터 처리 흐름은 다음과 같습니다.
