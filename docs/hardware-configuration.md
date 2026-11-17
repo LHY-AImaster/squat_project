@@ -17,10 +17,10 @@ SquatMate는 허리와 허벅지의 움직임을 각각 측정하기 위해 두 
 
 ### Actual Hardware
 
-| Waist Sensor Module                             | Thigh Sensor Module                              |
-|-------------------------------------------------|--------------------------------------------------|
-| ![Waist Sensor](docs/images/waistUnoSensor.jpg) | ![Thigh Sensor](docs/images/thighNanoSensor.jpg) |
-| Arduino Uno + MPU6050 + BT-05                   | Arduino Nano + MPU6050 + BT-05                   |
+| Waist Sensor Module                        | Thigh Sensor Module                         |
+|--------------------------------------------|---------------------------------------------|
+| ![Waist Sensor](images/waistUnoSensor.jpg) | ![Thigh Sensor](images/thighNanoSensor.jpg) |
+| Arduino Uno + MPU6050 + BT-05              | Arduino Nano + MPU6050 + BT-05              |
 
 ## 2. Circuit & Pin Configuration
 

@@ -13,14 +13,12 @@
 | 배포 | Render · Supabase     | GitHub 연동을 통한 간편한 서버 배포와 별도 PostgreSQL 호스팅을 통한 운영 비용 절감 |
 
 ## Flutter · Dart
-___
 
 **Cross-platform Mobile Development**
 
 Android와 iOS를 함께 고려한 모바일 앱 개발을 위해 Flutter를 선택했다. 하나의 코드베이스로 두 플랫폼의 앱을 개발할 수 있으며, SquatMate에 필요한 UI 구성, BLE 센서 연동, 실시간 데이터 처리 및 상태 관리 기능을 구현하기에 충분하다고 판단했다.
 
 ## Java · Spring Boot
-___
 
 **Structured Backend Development**
 
@@ -33,7 +31,6 @@ ___
 프로젝트 규모만 고려하면 FastAPI와 같은 가벼운 프레임워크도 충분히 활용할 수 있다. 하지만 이번 프로젝트에서는 구현의 간결함보다 서버 구조와 유지보수 방식을 경험하는 데 더 큰 의미를 두었다.
 
 ## MariaDB → PostgreSQL
-___
 
 **Database Migration for Deployment**
 
@@ -44,7 +41,6 @@ ___
 이번 전환은 특정 데이터베이스가 다른 데이터베이스보다 절대적으로 우수하다는 판단보다는, 실제 배포 환경과 개발 편의성, 기존 시스템에 미치는 변경 범위를 함께 고려한 결정이었다.
 
 ## SQLite
-___
 
 **Local-first Record Management**
 
@@ -53,7 +49,6 @@ ___
 또한 서버에서 사용하는 PostgreSQL과 동일한 관계형 데이터베이스라는 점에서 테이블과 SQL을 기반으로 한 데이터 관리 개념을 일관되게 유지할 수 있었다. 이를 바탕으로 앱 내부의 1차 저장소와 서버의 PostgreSQL을 활용한 2단계 저장 구조를 설계하고, 사용자가 자신의 운동 기록을 서버에 전송할지 직접 결정할 수 있도록 했다.
 
 ## JWT
-___
 
 **Token-based Authentication**
 
@@ -62,7 +57,6 @@ ___
 JWT는 웹과 모바일 서비스에서 널리 활용되는 토큰 기반 인증 방식이다. 이번 프로젝트에서는 토큰 발급과 검증을 비롯해 인증된 사용자의 접근 권한 확인, 폐기 토큰을 활용한 로그아웃 처리까지 서버의 인증 및 보안 구조를 직접 구현하고자 했다.
 
 ## Gemini API
-___
 
 **Cost-effective AI Integration**
 
@@ -71,7 +65,6 @@ AI 코칭 기능을 구현하기 위해 외부 생성형 AI API를 검토했으�
 Gemini API는 무료 사용량을 제공하면서도 이러한 수준의 문장 생성 및 정보 전달 기능을 구현하기에 적합했다. 이를 통해 별도의 API 비용 부담 없이 AI 코칭 기능을 개발하고 테스트할 수 있었다.
 
 ## Render · Supabase
-___
 
 **Cost-effective Cloud Deployment**
 

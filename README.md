@@ -191,7 +191,7 @@ SquatMate 개발 과정에서 마주한 기술적 문제와 설계 선택, 이�
 - AI API 호출 최적화 및 센서 노이즈 개선
 - 하드웨어 프로토타입의 한계를 고려한 설계
 
-자세한 내용은 [Technical Decisions](docs/technical-decisions.md)에서 확인할 수 있습니다.
+자세한 내용은 [Technical Decisions](docs/tech-decisions.md)에서 확인할 수 있습니다.
 
 ## 🧪 Testing & Validation
 
