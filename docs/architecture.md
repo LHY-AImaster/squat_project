@@ -1,4 +1,6 @@
-# SquatMate Architecture
+# 🏗 SquatMate Architecture
+
+본 문서는 SquatMate의 전체 시스템을 구성하는 주요 컴포넌트와 각 컴포넌트의 역할 및 데이터 흐름, 상호 연결 관계를 상세하게 설명합니다.
 
 ## Component Diagram
 

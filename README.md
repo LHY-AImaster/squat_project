@@ -41,7 +41,7 @@ Flutter 기반 모바일 애플리케이션과 Spring Boot 서버, Arduino 및 M
 - MPU6050 × 2
 - BT-05 Bluetooth 모듈 × 2
 
-(기술 선택 이유 docs/tech-stack)
+자세한 기술 스택과 각 기술을 선정한 이유는 [Tech Stack Documentation](docs/tech-stack.md)에서 확인할 수 있습니다.
 
 ## ✨ Key Features
 
