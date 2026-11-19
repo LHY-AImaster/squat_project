@@ -265,7 +265,6 @@ squat_project/
 - [Bluetooth 센서 데이터 수신](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/services/my_bluetooth_service.dart)
 - [스쿼트 분석 서비스](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/services/squat_analyzer_service.dart)
 - [운동 상태 및 기록 관리](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/providers/squat_provider.dart)
-- [운동 기록 화면 및 서버 전송](https://github.com/LHY-AImaster/squat_project/blob/main/app/lib/screens/record_history_screen.dart)
 
 **Spring Boot Backend**
 - [백엔드 API 컨트롤러](https://github.com/LHY-AImaster/squat_project/blob/main/server/src/main/java/com/squat/server/controller/SquatWorkoutController.java)
