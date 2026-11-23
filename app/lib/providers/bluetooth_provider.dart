@@ -40,39 +40,16 @@ class BluetoothProvider with ChangeNotifier {
   }
 
   /// 듀얼 아두이노 블루투스 연결 시작
-  Future<void> startBluetoothWorkout(
-      SquatProvider squatProvider,
-      ) async {
-    try {
-      _connectionStatus = 'CONNECTING';
-      notifyListeners();
+  Future<void> startBluetoothWorkout(SquatProvider squatProvider) async {
+    _connectionStatus = 'CONNECTING';
+    notifyListeners();
 
-      final hasPermission = await _requestBluetoothPermissions();
+    // 가상의 기기 검색 시간
+    await Future.delayed(const Duration(seconds: 2));
 
-      if (!hasPermission) {
-        throw Exception(
-          '블루투스 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.',
-        );
-      }
-
-      await _bluetoothService.connectToDualArduino(
-            (waistVec, thighVec) {
-          try {
-            squatProvider.updateRawData(waistVec, thighVec);
-          } catch (e) {
-            print('SquatProvider 업데이트 오류: $e');
-          }
-        },
-      );
-
-      _connectionStatus = 'CONNECTED';
-      notifyListeners();
-    } catch (error) {
-      _connectionStatus = 'DISCONNECTED';
-      notifyListeners();
-
-      throw error.toString().replaceAll('Exception: ', '');
-    }
+    // 가상 연결 완료
+    _connectionStatus = 'CONNECTED';
+    notifyListeners();
   }
 
   /// 두 기기 연결 해제

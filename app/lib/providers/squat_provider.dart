@@ -1,9 +1,20 @@
+import 'dart:math';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/squat_model.dart';
 import 'package:app/services/squat_analyzer_service.dart';
 import '../utils/low_pass_filter.dart';
 import '../models/squat_record.dart';
 import '../services/database_helper.dart';
+
+// 가상 스쿼트 시나리오
+enum VirtualSquatScenario {
+  normal,       // 정상
+  waistError,   // 상체 과도하게 숙임
+  shallow,      // 깊이 부족
+  fast,         // 빠른 스쿼트
+  combined,      // 복합 오류
+}
 
 class SquatProvider with ChangeNotifier {
   // 화면에 그릴 상태 데이터
@@ -34,6 +45,13 @@ class SquatProvider with ChangeNotifier {
   bool _isReading = false;
   bool get isReading => _isReading;
 
+  // 가상 운동 타이머
+  Timer? _virtualWorkoutTimer;
+  Stopwatch? _virtualStopwatch;
+
+  // 현재 진행 중인 가상 스쿼트 시나리오
+  VirtualSquatScenario? _currentVirtualScenario;
+
   // 운동 시작
   void startReading() {
     if (_isReading) return;
@@ -53,6 +71,13 @@ class SquatProvider with ChangeNotifier {
 
   // 블루투스 연결 해제
   void stopReadingOnDisconnect() {
+    // 가상 운동 타이머 정리
+    _virtualWorkoutTimer?.cancel();
+    _virtualWorkoutTimer = null;
+
+    _virtualStopwatch?.stop();
+    _virtualStopwatch = null;
+
     _isReading = false;
     _baseWaistVec = null;
     _baseThighVec = null;
@@ -121,6 +146,215 @@ class SquatProvider with ChangeNotifier {
     }
   }
 
+  // 가상 센서 각도를 원본 벡터로 변환하여 기존 분석 파이프라인에 전달
+  void updateVirtualData({
+    required double waistAngle,
+    required double thighAngle,
+  }) {
+    if (!_isReading) return;
+
+    // 각도를 3축 벡터로 변환
+    List<double> toVector(double angle) {
+      final radian = angle * pi / 180.0;
+
+      return [
+        sin(radian),
+        0.0,
+        cos(radian),
+      ];
+    }
+
+    final waistVector = toVector(waistAngle);
+    final thighVector = toVector(thighAngle);
+
+    // 기존 센서 데이터 처리 함수로 전달
+    updateRawData(waistVector, thighVector);
+  }
+
+  // 가상 스쿼트 시나리오 랜덤 선택
+  void _selectVirtualScenario() {
+    final random = Random();
+    final value = random.nextInt(100);
+
+    if (value < 60) {
+      _currentVirtualScenario = VirtualSquatScenario.normal;
+    } else if (value < 70) {
+      _currentVirtualScenario = VirtualSquatScenario.waistError;
+    } else if (value < 80) {
+      _currentVirtualScenario = VirtualSquatScenario.shallow;
+    } else if (value < 90) {
+      _currentVirtualScenario = VirtualSquatScenario.fast;
+    } else {
+      _currentVirtualScenario = VirtualSquatScenario.combined;
+    }
+
+    print("🎲 선택된 가상 시나리오: $_currentVirtualScenario");
+  }
+
+  void startVirtualWorkout() {
+    if (_isReading) return;
+
+    startReading();
+
+    _virtualStopwatch = Stopwatch()..start();
+    _virtualWorkoutTimer?.cancel();
+
+    double smoothedThighAngle = 0.0;
+    double smoothedWaistAngle = 20.0;
+
+    _selectVirtualScenario();
+
+    int cycleStartMs = 0;
+
+    double getCycleDuration() {
+      switch (_currentVirtualScenario!) {
+        case VirtualSquatScenario.shallow:
+          return 5.5;
+        case VirtualSquatScenario.combined:
+        case VirtualSquatScenario.fast:
+          return 3.0;
+        case VirtualSquatScenario.normal:
+        case VirtualSquatScenario.waistError:
+          return 6.0;
+      }
+    }
+
+    double cycleDuration = getCycleDuration();
+
+    _virtualWorkoutTimer = Timer.periodic(
+      const Duration(milliseconds: 16),
+          (timer) {
+        if (!_isReading || _virtualStopwatch == null) {
+          timer.cancel();
+          return;
+        }
+
+        int now = _virtualStopwatch!.elapsedMilliseconds;
+
+        double elapsed = (now - cycleStartMs) / 1000.0;
+
+        if (elapsed >= cycleDuration) {
+          cycleStartMs = now;
+          _selectVirtualScenario();
+          cycleDuration = getCycleDuration();
+          elapsed = 0.0;
+        }
+
+        bool isShallow =
+            _currentVirtualScenario == VirtualSquatScenario.shallow ||
+                _currentVirtualScenario == VirtualSquatScenario.combined;
+
+        bool isFast =
+            _currentVirtualScenario == VirtualSquatScenario.fast ||
+                _currentVirtualScenario == VirtualSquatScenario.combined;
+
+        bool isWaistError =
+            _currentVirtualScenario == VirtualSquatScenario.waistError ||
+                _currentVirtualScenario == VirtualSquatScenario.combined;
+
+        double maxThighAngle = isShallow ? 75.0 : 100.0;
+
+        double targetThighAngle = 0.0;
+        double targetWaistAngle = 20.0;
+
+        double clampProgress(double value) {
+          return value.clamp(0.0, 1.0).toDouble();
+        }
+
+        if (isFast) {
+          if (elapsed < 0.2) {
+            targetThighAngle = 0.0;
+          } else if (elapsed < 1.0) {
+            double progress =
+            clampProgress((elapsed - 0.2) / 0.8);
+
+            targetThighAngle = maxThighAngle * progress;
+          } else if (elapsed < 1.1) {
+            targetThighAngle = maxThighAngle;
+          } else if (elapsed < 1.9) {
+            double progress =
+            clampProgress((elapsed - 1.1) / 0.8);
+
+            targetThighAngle =
+                maxThighAngle * (1.0 - progress);
+          } else {
+            targetThighAngle = 0.0;
+          }
+        } else if (isShallow) {
+          if (elapsed < 0.2) {
+            targetThighAngle = 0.0;
+          } else if (elapsed < 2.4) {
+            double progress =
+            clampProgress((elapsed - 0.2) / 2.2);
+
+            targetThighAngle = maxThighAngle * progress;
+          } else if (elapsed < 3.0) {
+            targetThighAngle = maxThighAngle;
+          } else if (elapsed < 5.2) {
+            double progress =
+            clampProgress((elapsed - 3.0) / 2.2);
+
+            targetThighAngle =
+                maxThighAngle * (1.0 - progress);
+          } else {
+            targetThighAngle = 0.0;
+          }
+        } else {
+          if (elapsed < 0.3) {
+            targetThighAngle = 0.0;
+          } else if (elapsed < 2.1) {
+            double progress =
+            clampProgress((elapsed - 0.3) / 1.8);
+
+            targetThighAngle =
+                maxThighAngle * progress * progress;
+          } else if (elapsed < 3.3) {
+            targetThighAngle = maxThighAngle;
+          } else if (elapsed < 5.3) {
+            double progress =
+            clampProgress((elapsed - 3.3) / 2.0);
+
+            double curve =
+                1.0 - (1.0 - progress) * (1.0 - progress);
+
+            targetThighAngle =
+                maxThighAngle * (1.0 - curve);
+          } else {
+            targetThighAngle = 0.0;
+          }
+        }
+
+        double waistChange = isWaistError ? 55.0 : 30.0;
+
+        targetWaistAngle =
+            20.0 + (waistChange * targetThighAngle / maxThighAngle);
+
+        smoothedThighAngle +=
+            (targetThighAngle - smoothedThighAngle) * 0.12;
+
+        smoothedWaistAngle +=
+            (targetWaistAngle - smoothedWaistAngle) * 0.12;
+
+        updateVirtualData(
+          waistAngle: smoothedWaistAngle,
+          thighAngle: smoothedThighAngle,
+        );
+      },
+    );
+  }
+
+  // 가상 운동 정지
+  void stopVirtualWorkout() {
+    _virtualWorkoutTimer?.cancel();
+    _virtualWorkoutTimer = null;
+
+    _virtualStopwatch?.stop();
+    _virtualStopwatch = null;
+
+    _isReading = false;
+    notifyListeners();
+  }
+
   // 운동 통계 및 필요 시 영점 초기화
   void resetWorkoutState({bool resetZeroPoint = false}) {
     // 진행 중인 스쿼트 판정 상태 초기화
@@ -152,6 +386,13 @@ class SquatProvider with ChangeNotifier {
 
   // 전체 상태 리셋
   void reset() {
+    // 가상 운동 타이머 정리
+    _virtualWorkoutTimer?.cancel();
+    _virtualWorkoutTimer = null;
+
+    _virtualStopwatch?.stop();
+    _virtualStopwatch = null;
+
     _isReading = false;
 
     _baseWaistVec = null;
