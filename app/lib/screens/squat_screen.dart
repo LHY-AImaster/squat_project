@@ -536,11 +536,11 @@ class _ActionButtons extends StatelessWidget {
   });
 
   void _handleStartWorkout(BuildContext context) {
-    squatProvider.startReading();
+    squatProvider.startVirtualWorkout();
 
     CommonSnackBar.show(
       context,
-      message: "실시간 스쿼트 코칭을 시작합니다.",
+      message: "가상 스쿼트 코칭을 시작합니다.",
       type: SnackBarType.success,
     );
   }
